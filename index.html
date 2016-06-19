@@ -17,7 +17,9 @@
 <body>
 	<div class="jumbotron">
 		<div class="container">
-			<h1>Train Scheduler</h1>
+            <h1>Trainify</h1>
+			<div class="clock"></div>
+
 		</div>		
 	</div>
     <div class="container">
@@ -63,11 +65,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Next Arrival</label>
-                                <input type="text" class="form-control " id="nextArrival">
+                                <input type="number" class="form-control " id="nextArrival">
                             </div>
                             <div class="form-group">
                                 <label>Frequency (Minutes)</label>
-                                <input type="text" class="form-control " id="frequency">
+                                <input type="number" class="form-control " id="frequency">
                             </div>
                             <button class="btn btn-default" id="submit" type="submit">Submit</button>                           
                         </form>
@@ -77,6 +79,7 @@
     </div><!-- end of container-->
     <!--jquery-->
     <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/moment.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="assets/js/datepicker.js"></script>
     <script src="assets/js/train.js"></script>
