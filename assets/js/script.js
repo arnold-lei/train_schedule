@@ -45,21 +45,43 @@ $('document').ready(function(){
 		return false;
 	});
 
-	FIRE_BASE_URL.on('child_added', function(child, prevChild){
-		// var minutesAway = moment().add(child.val().minutesAway, 'minutes');
-		//moment.duration(future.diff(now)).asMinutes();
-		var minutesAway = moment().add(child.val().minutesAway, 'minutes');
-		var now = moment();
-		var timeOfArrival = moment.duration(minutesAway.diff(now));
 
-		row = $('<tr>');
+	FIRE_BASE_URL.on('child_added', function(child){
+
+
+		var now = moment();
+		var frequency = Number(child.val().frequency);
+		var duration = moment.duration(frequency, 'minutes');
+		var minutesAway = Number(child.val().nextArrival);
+		var start = moment(Number(child.val().time));
+		var timeTill = frequency - (now.diff(start.add(minutesAway, 'm'), 'minutes') % frequency);
+		var nextTrain = moment().add(timeTill, 'minutes').format('hh:mm:ss');
+
+
+    	row = $('<tr>');
 	    tTrainName = $('<td>'+ child.val().trainName +'</td>');
 	    tDestination = $('<td>'+ child.val().destination+'</td>');
-	    tNextArrival = $('<td>'+child.val().nextArrival +'</td>');
-	    tFrequency = $('<td>'+ child.val().frequency+'</td>');
-	    tMinutesAway = $('<td>'+ timeOfArrival.asMinutes() +'</td>');
+	   	tFrequency = $('<td>'+ child.val().frequency+ '</td>');
+	    tNextArrival = $('<td id="nextTrain">'+ nextTrain +'</td>');
+	    tMinutesAway = $('<td id="timeTill">'+ timeTill +'</td>');
 	    row.append(tTrainName, tDestination, tFrequency, tNextArrival, tMinutesAway);
 	    $('tbody').append(row)
+
+	    function update(){
+		    var now = moment();
+			var frequency = Number(child.val().frequency);
+			var duration = moment.duration(frequency, 'minutes');
+			var minutesAway = Number(child.val().nextArrival);
+			var start = moment(Number(child.val().time));
+			var timeTill = frequency - (now.diff(start.add(minutesAway, 'm'), 'minutes') % frequency);
+			var nextTrain = moment().add(timeTill, 'minutes').format('hh:mm:ss');
+		    
+		    $('#nextTrain').text(nextTrain);
+	    	$('#timeTill').text(timeTill);
+	    	setTimeout(update, 1000);
+	    };
+	    update();
+
 	});
 
     // $('#frequency').datepicker({
