@@ -1,5 +1,5 @@
 $('document').ready(function(){
-	var train = new Firebase("https://arnoldlei-train.firebaseio.com/");
+	var FIRE_BASE_URL = new Firebase("https://arnoldlei-train.firebaseio.com/");
 
 	function clock(){
 
@@ -22,38 +22,45 @@ $('document').ready(function(){
 	//     format: "hh:mm:ss"
 	// });  
 
-	$('#submit').on('click', function(event){
+	$('#submit').on('click', function(){
+		var minutesAway;
 		//the frequency and next arrival must be times
 		trainName = $('#trainName').val().trim();
 	  	destination = $('#destination').val().trim();
 	  	nextArrival = ($('#nextArrival').val().trim());
 	  	frequency = $('#frequency').val().trim();
-	  	var minutesAway = number(frequency) - number(nextArrival);
+	  	minutesAway = (Number(frequency) - Number(nextArrival)).toString();
+	  	
 		
-		train.push({
+		FIRE_BASE_URL.push({
 			trainName: trainName,
 			destination: destination,
 			nextArrival: minutesAway,
 			frequency: frequency,
-			now: moment(),
+			time: Firebase.ServerValue.TIMESTAMP,
 		});
 
 		//resets the value fields of the submit form 
 		$('input').val('');
-		event.preventDefault();
 		return false;
 	});
 
-	// train.on('child_added', function(child, prevChild){
-	// 	row = $('<tr>');
-	//     tTrainName = $('<td>'+ child.val().trainName +'</td>');
-	//     tDestination = $('<td>'+ child.val().destination+'</td>');
-	//     tNextArrival = $('<td>'+child.val().nextArrival +'</td>');
-	//     tFrequency = $('<td>'+ child.val().frequency+'</td>');
-	//     tMinutesAway = $('<td>'+ child.val().minutesAway+'</td>');
-	//     row.append(tTrainName, tDestination, tNextArrival, tFrequency, tMinutesAway);
-	//     $('tbody').append(row)
-	// });
+	FIRE_BASE_URL.on('child_added', function(child, prevChild){
+		// var minutesAway = moment().add(child.val().minutesAway, 'minutes');
+		//moment.duration(future.diff(now)).asMinutes();
+		var minutesAway = moment().add(child.val().minutesAway, 'minutes');
+		var now = moment();
+		var timeOfArrival = moment.duration(minutesAway.diff(now));
+
+		row = $('<tr>');
+	    tTrainName = $('<td>'+ child.val().trainName +'</td>');
+	    tDestination = $('<td>'+ child.val().destination+'</td>');
+	    tNextArrival = $('<td>'+child.val().nextArrival +'</td>');
+	    tFrequency = $('<td>'+ child.val().frequency+'</td>');
+	    tMinutesAway = $('<td>'+ timeOfArrival.asMinutes() +'</td>');
+	    row.append(tTrainName, tDestination, tFrequency, tNextArrival, tMinutesAway);
+	    $('tbody').append(row)
+	});
 
     // $('#frequency').datepicker({
     //     format: "dd/mm/yyyy"
