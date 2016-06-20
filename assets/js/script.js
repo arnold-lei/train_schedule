@@ -2,17 +2,8 @@ $('document').ready(function(){
 	var FIRE_BASE_URL = new Firebase("https://arnoldlei-train.firebaseio.com/");
 
 	function clock(){
-
-		var minutes = 90;
-		var now = moment();
-		var future = moment().add(minutes, 'minutes');
-		var time = moment().format('MMMM Do YYYY, h:mm:ss a');
-
-		var test = moment.duration(future.diff(now)).asMinutes();
-
+		var time = moment().format('MMMM Do YYYY, hh:mm:ss a');
 		$('.clock').html('<h2>'+time+'</h2>');
-		$('.test').html('<h2>'+future+'</h2>');
-		$('.test2').html('<h2>'+test+'</h2>');
 		setTimeout(clock, 1000);
 	}
 
